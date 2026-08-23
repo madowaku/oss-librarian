@@ -1,0 +1,15 @@
+interface:
+  display_name: "OSS Librarian"
+  short_description: "Find and compare reusable OSS before coding"
+  default_prompt: "Use $oss-librarian to research reusable OSS for this feature before implementation."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "github"
+      description: "GitHub MCP server for repository and code search"
+      transport: "streamable_http"
+      url: "https://api.githubcopilot.com/mcp/"
+
+policy:
+  allow_implicit_invocation: true
