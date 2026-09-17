@@ -17,12 +17,14 @@
     "architecture_signals",
     "target_fit",
     "code_license",
+    "license_scope_text",
     "asset_license",
     "original_data_required",
     "tests_ci",
     "maintenance_signal",
     "implementation_files",
     "usage_or_scene_files",
+    "evidence_pair_status",
     "extractability",
     "reuse_scope",
     "evidence_type"
@@ -59,6 +61,7 @@
     },
     "target_fit": { "type": "string" },
     "code_license": { "type": "string" },
+    "license_scope_text": { "type": "string", "minLength": 1 },
     "asset_license": { "type": "string" },
     "original_data_required": { "enum": ["yes", "no", "unknown"] },
     "tests_ci": { "type": "string" },
@@ -75,6 +78,7 @@
       "uniqueItems": true,
       "maxItems": 10
     },
+    "evidence_pair_status": { "enum": ["complete", "partial", "missing"] },
     "extractability": { "enum": ["high", "medium", "low", "unknown"] },
     "reuse_scope": { "enum": ["reuse", "partial", "reference", "reject"] },
     "evidence_type": {
@@ -82,6 +86,12 @@
       "items": { "enum": ["direct", "corroborated", "inferred", "unknown"] },
       "uniqueItems": true,
       "minItems": 1
+    },
+    "discovery_path": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": false,
+      "maxItems": 8
     },
     "do_not_import": {
       "type": "array",
