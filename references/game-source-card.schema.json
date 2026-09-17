@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/madowaku/oss-librarian/references/game-source-card.schema.json",
+  "title": "OSS Librarian Game Source Candidate Card",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "repository",
+    "ref",
+    "provenance_class",
+    "genre",
+    "dimension",
+    "engine_framework",
+    "language",
+    "engine_version",
+    "mechanics",
+    "architecture_signals",
+    "target_fit",
+    "code_license",
+    "asset_license",
+    "original_data_required",
+    "tests_ci",
+    "maintenance_signal",
+    "implementation_files",
+    "usage_or_scene_files",
+    "extractability",
+    "reuse_scope",
+    "evidence_type"
+  ],
+  "properties": {
+    "repository": { "type": "string", "minLength": 1 },
+    "ref": { "type": "string", "minLength": 1 },
+    "provenance_class": {
+      "enum": [
+        "native-open-game",
+        "engine-native-example",
+        "source-release",
+        "source-port",
+        "reimplementation",
+        "decompilation",
+        "reverse-engineering",
+        "unknown"
+      ]
+    },
+    "genre": { "type": "string" },
+    "dimension": { "enum": ["2D", "2.5D", "3D", "mixed", "unknown"] },
+    "engine_framework": { "type": "string" },
+    "language": { "type": "string" },
+    "engine_version": { "type": "string" },
+    "mechanics": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "architecture_signals": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "target_fit": { "type": "string" },
+    "code_license": { "type": "string" },
+    "asset_license": { "type": "string" },
+    "original_data_required": { "enum": ["yes", "no", "unknown"] },
+    "tests_ci": { "type": "string" },
+    "maintenance_signal": { "type": "string" },
+    "implementation_files": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "maxItems": 10
+    },
+    "usage_or_scene_files": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "maxItems": 10
+    },
+    "extractability": { "enum": ["high", "medium", "low", "unknown"] },
+    "reuse_scope": { "enum": ["reuse", "partial", "reference", "reject"] },
+    "evidence_type": {
+      "type": "array",
+      "items": { "enum": ["direct", "corroborated", "inferred", "unknown"] },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "do_not_import": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "notes": { "type": "string" }
+  }
+}
