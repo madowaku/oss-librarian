@@ -27,6 +27,7 @@ Use only when game-source mode is active.
 - **Target engine/version:**
 - **Content reuse in scope:** yes / no / unknown
 - **Discovery indexes used:**
+- **Search escalation used:** discovery / mechanic signals / code search / directory walk / exact fetch
 
 ## Candidate comparison
 
@@ -36,9 +37,9 @@ Use only when game-source mode is active.
 
 ### Game-source candidate details (optional)
 
-| Candidate | Provenance | Mechanic match | Engine/dimension | Code license | Asset/content license | Original data | Extractability |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `owner/repo` | native-open-game / source-port / reimplementation / ... | direct / partial / weak | engine + 2D/3D | evidence or unknown | evidence or unknown | yes/no/unknown | high/medium/low |
+| Candidate | Provenance | Mechanic match | Engine/dimension | Code license + scope | Asset/content license | Original data | Evidence pair | Extractability |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `owner/repo` | native-open-game / source-port / reimplementation / ... | direct / partial / weak | engine + 2D/3D | license + `source code/project/...` | evidence or unknown | yes/no/unknown | complete/partial/missing | high/medium/low |
 
 Candidate cards may also be emitted against `references/game-source-card.schema.json` when machine-readable handoff is useful.
 
@@ -49,7 +50,19 @@ For each selected file, include the repository ref and why it matters:
 1. `owner/repo@ref:path` - reason; evidence type; symbol or line anchor.
 2. `owner/repo@ref:path` - reason; evidence type; symbol or line anchor.
 
-For game-source mode, prefer pairing the implementation file with one scene/prefab/resource/entity/usage file that proves runtime integration.
+For game-source mode, pair the implementation file with one scene/prefab/resource/entity/usage/data file that proves runtime integration before recommending `reuse` or `partial`.
+
+## Cross-engine model (optional)
+
+Use when the recommendation crosses engines or languages.
+
+`clock/input -> read state -> compute -> commit mutations -> emit events -> presentation`
+
+- **State owner:**
+- **Ordering constraints:**
+- **Deterministic inputs:**
+- **Side effects:**
+- **Target-engine mapping:**
 
 ## Recommendation
 
@@ -69,7 +82,7 @@ For game-source mode, explicitly include assets/content, original commercial dat
 ```markdown
 ### OSS discovery - YYYY-MM-DD
 - repo/ref: `owner/repo@ref`
-- license evidence: `path` - license/unknown
+- license evidence: `path` - license/unknown; scope: source code/project/assets/unknown
 - useful pattern: ...
 - adopted boundary: ...
 - avoided: ...
