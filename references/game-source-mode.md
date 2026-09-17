@@ -1,4 +1,4 @@
-# Game Source Mode
+# Game Source Mode v0.2
 
 Use this reference when the target is a video game, game mechanic, gameplay system, game engine integration, or a feature best understood from complete game source rather than from a small library alone.
 
@@ -24,6 +24,37 @@ A useful seed index is:
 - `bobeff/open-source-games` - categorized links to open-source games, source releases, ports, reimplementations, and reverse-engineering projects. Its index license does not determine the licenses of linked projects.
 
 After an index produces candidates, inspect each candidate repository directly. Prefer canonical repositories over mirrors and forks unless the fork is the maintained implementation being evaluated.
+
+## Search escalation ladder
+
+Do not stop at repository-title search or README evidence. For every retained candidate, climb this ladder only as far as needed:
+
+1. **Discovery** - curated index, repository search, or known project name.
+2. **Mechanic signals** - search behavior terms and source-level signals such as `velocity`, `mouse look`, `spawn table`, `wave`, `timer`, `pool`, `tick`, `production`, or `demand`.
+3. **Repository code search** - search the candidate repository for symbols, filenames, data types, and implementation terms.
+4. **Manifest-guided directory walk** - if code search is empty/unindexed, use the engine manifest and repository tree to inspect likely source directories.
+5. **Exact file fetch** - fetch the smallest implementation file(s), then find the scene/prefab/resource/usage/data file that wires them into runtime state.
+6. **Fallback or stop** - if no evidence pair can be established within budget, downgrade the candidate to `reference`, reject it, or try one focused alternative. Do not promote README-only evidence to direct reuse.
+
+A failed candidate is useful information. Drop it when source inspection shows that the title, description, or genre was misleading.
+
+### Engine-specific directory fallback
+
+When indexed code search fails, use these defaults before giving up.
+
+**Godot**
+
+`project.godot -> scenes/ or *.tscn -> scripts/ or *.gd/*.cs -> *.tres/resources -> input/autoload ownership`
+
+Inspect `project.godot` first for engine generation, main scene, input map, autoloads, and feature flags. Then follow scene script references rather than crawling every file.
+
+**Unity**
+
+`ProjectSettings/ProjectVersion.txt -> Packages/manifest.json -> Assets/ -> likely Scripts or Runtime directories -> prefab/scene references`
+
+Search common source roots such as `Assets/**/Scripts`, `Assets/**/Runtime`, feature-specific folders, and assembly definitions. If a README names a class such as `WaveSpawner`, use directory listing plus exact file fetch when repository code search cannot resolve it.
+
+For other engines, identify the equivalent manifest, source roots, scene/entity composition, and data definition path.
 
 ## Candidate provenance classes
 
@@ -57,17 +88,30 @@ For each surviving candidate capture:
 - `architecture_signals`
 - `target_fit`
 - `code_license`
+- `license_scope_text`: the repository wording that defines what the license covers, such as `source code`, `entire project`, or `assets`; use `unknown` when not explicit
 - `asset_license`
 - `original_data_required`: `yes`, `no`, or `unknown`
 - `tests_ci`
 - `maintenance_signal`
 - `implementation_files`
 - `usage_or_scene_files`
+- `evidence_pair_status`: `complete`, `partial`, or `missing`
 - `extractability`: `high`, `medium`, `low`
 - `reuse_scope`: `reuse`, `partial`, `reference`, or `reject`
 - `evidence_type`
 
-Unknown values must stay `unknown` rather than being inferred from genre or engine.
+Unknown values must stay `unknown` rather than being inferred from genre, engine, or a broad license filename.
+
+## Evidence-pair gate
+
+Before classifying a candidate as `reuse` or `partial`, require an **evidence pair**:
+
+1. at least one implementation file or symbol that directly exposes the requested behavior; and
+2. at least one usage, scene, prefab, resource, data definition, test, or integration artifact that shows how the behavior is owned or invoked.
+
+If only one half exists, `evidence_pair_status=partial` and the candidate cannot exceed `reference` unless the missing half is irrelevant and that exception is explained. README prose can corroborate an evidence pair but cannot substitute for both halves.
+
+This gate prevents attractive architecture descriptions from becoming unsupported copy/adaptation recommendations.
 
 ## Mechanic-first search
 
@@ -126,13 +170,16 @@ Never collapse game licensing into one field.
 Check separately:
 
 1. **code license** - source files and libraries;
-2. **asset/content license** - art, audio, maps, fonts, dialogue, levels, shaders, and bundled data;
-3. **original-data dependency** - whether the project expects files from a commercial or separately licensed game;
-4. **name/trademark boundary** - do not treat an open code license as permission to reuse a title, logo, or branded content.
+2. **license scope wording** - what the project actually says the license covers; record `source code`, `software`, `project`, `assets`, or `unknown` instead of silently expanding scope;
+3. **asset/content license** - art, audio, maps, fonts, dialogue, levels, shaders, and bundled data;
+4. **original-data dependency** - whether the project expects files from a commercial or separately licensed game;
+5. **name/trademark boundary** - do not treat an open code license as permission to reuse a title, logo, or branded content.
 
 A curated index license applies only to that index unless the linked project says otherwise.
 
 If code is permissively licensed but assets are unclear, code adaptation may still be possible while assets remain excluded. If the project requires original commercial data, treat that data boundary as a hard `do not import` item.
+
+For permissive licenses, record concrete obligations such as notice/copyright preservation without claiming legal certainty beyond the repository evidence.
 
 ## Extractability
 
@@ -144,20 +191,32 @@ Use extractability to estimate how cleanly the useful behavior can cross into th
 
 Low extractability does not mean low value. It often means `algorithm/reference only` is the right decision.
 
+## Cross-engine architecture handoff
+
+When the useful candidate is in a different engine or language, do not translate files line-by-line. Extract a small engine-neutral state/data-flow model first.
+
+Prefer a compact form such as:
+
+`clock/tick -> read immutable inputs -> compute production/consumption -> commit ledger/state mutations -> emit events -> presentation reacts`
+
+Name ownership boundaries, ordering constraints, deterministic inputs, and side effects. Then map those roles to the target engine only after the architecture is explicit.
+
 ## Game-source output
 
 When game-source mode is active, add these items to the normal report:
 
 - provenance class for each candidate;
 - mechanic match rather than genre similarity alone;
-- code license and asset/content license as separate evidence;
+- code license, license scope wording, and asset/content license as separate evidence;
 - original-data requirement;
+- evidence-pair status;
 - extractability;
 - exact implementation file plus a usage/scene/data file that proves integration when available;
-- explicit `Do not import` for assets, original data, trademarks, unrelated engine subsystems, or copied architecture that is too coupled.
+- explicit `Do not import` for assets, original data, trademarks, unrelated engine subsystems, or copied architecture that is too coupled;
+- an engine-neutral state/data-flow model when the recommendation crosses engines.
 
 ## Stop conditions
 
-Stop when one candidate exposes the mechanic with direct source evidence and a clear reuse boundary, even if a more famous game exists.
+Stop when one candidate exposes the mechanic with direct source evidence, a complete evidence pair, acceptable rights boundaries, and a clear reuse boundary, even if a more famous game exists.
 
-Also stop when all remaining candidates are only visually similar, require inaccessible proprietary data, have unclear source licensing, or are so coupled that a focused local implementation is cheaper than further excavation.
+Also stop when all remaining candidates are only visually similar, require inaccessible proprietary data, have unclear source licensing, cannot produce an evidence pair within the research budget, or are so coupled that a focused local implementation is cheaper than further excavation.
