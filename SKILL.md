@@ -168,3 +168,7 @@ Stop searching and hand off when any of these holds:
 In game-source mode, also stop when remaining candidates are only visually/genre-similar, depend on inaccessible original data, or are so coupled that extracting the behavior costs more than a focused local implementation.
 
 In the last case, say that the exploration did not produce enough value and recommend a focused local implementation. A concise negative result is better than keeping the implementer inside the library.
+
+## Evaluation
+
+Use [`evals/game-source-mode-v0.1/`](evals/game-source-mode-v0.1/) to regression-test game-source behavior. The pack contains five fixtures covering Godot FPS controllers, Unity wave spawning, city-builder economy ticks, decompilation/reverse-engineering safety, and code-vs-assets license separation. Treat hard-fail conditions in the pack as release blockers for future game-source-mode revisions.
